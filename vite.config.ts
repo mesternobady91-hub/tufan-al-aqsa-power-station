@@ -150,6 +150,80 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
+function vitePluginAdminAPI(): Plugin {
+  return {
+    name: "manus-admin-api",
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use((req, res, next) => {
+        // Only run in development
+        if (process.env.NODE_ENV === "production") {
+          return next();
+        }
+
+        // Parse url
+        const url = new URL(req.url || "", "http://localhost");
+
+        if (req.method === "POST" && url.pathname === "/api/admin/save-config") {
+          let body = "";
+          req.on("data", (chunk) => {
+            body += chunk.toString();
+          });
+          req.on("end", () => {
+            try {
+              const data = JSON.parse(body);
+              const configPath = path.resolve(PROJECT_ROOT, "client", "src", "config.json");
+              fs.writeFileSync(configPath, JSON.stringify(data, null, 2), "utf-8");
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ success: true }));
+            } catch (e) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ success: false, error: String(e) }));
+            }
+          });
+          return;
+        }
+
+        if (req.method === "POST" && url.pathname === "/api/admin/upload-apk") {
+          try {
+            const filename = url.searchParams.get("filename") || "app.apk";
+            // Ensure filename is safe
+            if (filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
+              res.writeHead(400, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ success: false, error: "Invalid filename" }));
+              return;
+            }
+
+            const publicDir = path.resolve(PROJECT_ROOT, "client", "public");
+            if (!fs.existsSync(publicDir)) {
+              fs.mkdirSync(publicDir, { recursive: true });
+            }
+            const filePath = path.join(publicDir, filename);
+            const writeStream = fs.createWriteStream(filePath);
+
+            req.pipe(writeStream);
+
+            writeStream.on("finish", () => {
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ success: true, path: `/${filename}` }));
+            });
+
+            writeStream.on("error", (e) => {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ success: false, error: String(e) }));
+            });
+          } catch (e) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ success: false, error: String(e) }));
+          }
+          return;
+        }
+
+        next();
+      });
+    }
+  };
+}
+
 function vitePluginStorageProxy(): Plugin {
   return {
     name: "manus-storage-proxy",
@@ -203,7 +277,7 @@ function vitePluginStorageProxy(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector(), vitePluginStorageProxy()];
+const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector(), vitePluginStorageProxy(), vitePluginAdminAPI()];
 
 export default defineConfig({
   plugins,

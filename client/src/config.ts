@@ -4,50 +4,21 @@
  * لا تحتاج لتعديل أي ملفات أخرى عند تغيير هذه القيم
  */
 
+import configData from './config.json';
+
 // معلومات التطبيق الأساسية
 export const APP_CONFIG = {
-  // معلومات المشروع
-  projectName: 'محطة طوفان الأقصى للكهرباء',
-  projectDescription: 'نظام إدارة محطة الكهرباء',
-  
-  // معلومات الإصدار
-  version: '1.0.0',
-  lastUpdateDate: '2026-07-08',
-  
-  // رابط تحميل التطبيق (APK)
-  downloadLink: 'https://example.com/app.apk',
-  
-  // معلومات الحقوق
-  copyrightYear: 2026,
-  copyrightText: 'جميع الحقوق محفوظة © محطة طوفان الأقصى للكهرباء',
+  projectName: configData.projectName,
+  projectDescription: configData.projectDescription,
+  version: configData.version,
+  lastUpdateDate: configData.lastUpdateDate,
+  downloadLink: configData.downloadLink,
+  copyrightYear: configData.copyrightYear,
+  copyrightText: configData.copyrightText,
 };
 
 // سجل التحديثات
-export const UPDATES_LOG = [
-  {
-    id: 1,
-    version: '1.0.0',
-    date: '2026-07-08',
-    title: 'الإصدار الأول',
-    description: 'إطلاق الإصدار الأول من التطبيق مع جميع الميزات الأساسية',
-    features: [
-      'واجهة مستخدم حديثة وسهلة الاستخدام',
-      'نظام إدارة محطة الكهرباء المتقدم',
-      'دعم كامل للغة العربية',
-    ],
-  },
-  {
-    id: 2,
-    version: '0.9.0',
-    date: '2026-06-15',
-    title: 'نسخة بيتا',
-    description: 'نسخة تجريبية من التطبيق لاختبار الميزات الأساسية',
-    features: [
-      'واجهة أولية للتطبيق',
-      'نظام تسجيل الدخول الأساسي',
-    ],
-  },
-];
+export const UPDATES_LOG = configData.updatesLog;
 
 // ألوان العلامة التجارية
 export const BRAND_COLORS = {
