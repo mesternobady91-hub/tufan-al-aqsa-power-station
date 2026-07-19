@@ -10,9 +10,11 @@ import configData from './config.json';
 export const APP_CONFIG = {
   projectName: configData.projectName,
   projectDescription: configData.projectDescription,
-  version: configData.version,
+  androidVersion: configData.androidVersion,
+  desktopVersion: configData.desktopVersion,
   lastUpdateDate: configData.lastUpdateDate,
-  downloadLink: configData.downloadLink,
+  androidDownloadLink: configData.androidDownloadLink,
+  desktopDownloadLink: configData.desktopDownloadLink,
   copyrightYear: configData.copyrightYear,
   copyrightText: configData.copyrightText,
 };

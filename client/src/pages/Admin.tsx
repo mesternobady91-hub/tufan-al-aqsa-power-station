@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, Save, Plus, Trash2, Upload, CheckCircle, AlertCircle, RefreshCw, Key } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, Upload, CheckCircle, AlertCircle, RefreshCw, Key, Smartphone, Monitor } from 'lucide-react';
 import initialConfigData from '../config.json';
 
 interface UpdateItem {
@@ -21,18 +21,27 @@ export default function Admin() {
   // Config States
   const [projectName, setProjectName] = useState(initialConfigData.projectName);
   const [projectDescription, setProjectDescription] = useState(initialConfigData.projectDescription);
-  const [version, setVersion] = useState(initialConfigData.version);
+  const [androidVersion, setAndroidVersion] = useState(initialConfigData.androidVersion);
+  const [desktopVersion, setDesktopVersion] = useState(initialConfigData.desktopVersion);
   const [lastUpdateDate, setLastUpdateDate] = useState(initialConfigData.lastUpdateDate);
-  const [downloadLink, setDownloadLink] = useState(initialConfigData.downloadLink);
+  const [androidDownloadLink, setAndroidDownloadLink] = useState(initialConfigData.androidDownloadLink);
+  const [desktopDownloadLink, setDesktopDownloadLink] = useState(initialConfigData.desktopDownloadLink);
   const [copyrightText, setCopyrightText] = useState(initialConfigData.copyrightText);
   const [updatesLog, setUpdatesLog] = useState<UpdateItem[]>(initialConfigData.updatesLog);
 
   // UI States
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+
+  // Android Upload State
   const [apkFile, setApkFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploadingApk, setIsUploadingApk] = useState(false);
+  const [uploadProgressApk, setUploadProgressApk] = useState(0);
+
+  // Desktop Upload State
+  const [desktopFile, setDesktopFile] = useState<File | null>(null);
+  const [isUploadingDesktop, setIsUploadingDesktop] = useState(false);
+  const [uploadProgressDesktop, setUploadProgressDesktop] = useState(0);
 
   // New Update Log State
   const [newLog, setNewLog] = useState({
@@ -93,16 +102,15 @@ export default function Admin() {
   const handleUploadApk = async () => {
     if (!apkFile) return;
 
-    setIsUploading(true);
-    setUploadProgress(10);
+    setIsUploadingApk(true);
+    setUploadProgressApk(10);
     setMessage({ type: '', text: '' });
 
     try {
       const filename = apkFile.name;
       
-      // Simulate progress since raw fetch doesn't natively support progress easily without XHR
       const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => (prev < 90 ? prev + 15 : prev));
+        setUploadProgressApk((prev) => (prev < 90 ? prev + 15 : prev));
       }, 300);
 
       const response = await fetch(`/api/admin/upload-apk?filename=${encodeURIComponent(filename)}`, {
@@ -114,21 +122,62 @@ export default function Admin() {
       });
 
       clearInterval(progressInterval);
-      setUploadProgress(100);
+      setUploadProgressApk(100);
 
       const result = await response.json();
 
       if (result.success) {
-        setDownloadLink(result.path);
-        setMessage({ type: 'success', text: `تم رفع ملف APK بنجاح باسم: ${filename}` });
+        setAndroidDownloadLink(result.path);
+        setMessage({ type: 'success', text: `تم رفع ملف الأندرويد APK بنجاح باسم: ${filename}` });
       } else {
         throw new Error(result.error || 'فشل الرفع');
       }
     } catch (e: any) {
-      setMessage({ type: 'error', text: `حدث خطأ أثناء رفع الملف: ${e.message}` });
+      setMessage({ type: 'error', text: `حدث خطأ أثناء رفع ملف APK: ${e.message}` });
     } finally {
-      setIsUploading(false);
+      setIsUploadingApk(false);
       setApkFile(null);
+    }
+  };
+
+  const handleUploadDesktop = async () => {
+    if (!desktopFile) return;
+
+    setIsUploadingDesktop(true);
+    setUploadProgressDesktop(10);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const filename = desktopFile.name;
+      
+      const progressInterval = setInterval(() => {
+        setUploadProgressDesktop((prev) => (prev < 90 ? prev + 15 : prev));
+      }, 300);
+
+      const response = await fetch(`/api/admin/upload-apk?filename=${encodeURIComponent(filename)}`, {
+        method: 'POST',
+        body: desktopFile,
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+      });
+
+      clearInterval(progressInterval);
+      setUploadProgressDesktop(100);
+
+      const result = await response.json();
+
+      if (result.success) {
+        setDesktopDownloadLink(result.path);
+        setMessage({ type: 'success', text: `تم رفع ملف الكمبيوتر بنجاح باسم: ${filename}` });
+      } else {
+        throw new Error(result.error || 'فشل الرفع');
+      }
+    } catch (e: any) {
+      setMessage({ type: 'error', text: `حدث خطأ أثناء رفع ملف الكمبيوتر: ${e.message}` });
+    } finally {
+      setIsUploadingDesktop(false);
+      setDesktopFile(null);
     }
   };
 
@@ -139,9 +188,11 @@ export default function Admin() {
     const newConfig = {
       projectName,
       projectDescription,
-      version,
+      androidVersion,
+      desktopVersion,
       lastUpdateDate,
-      downloadLink,
+      androidDownloadLink,
+      desktopDownloadLink,
       copyrightYear: new Date().getFullYear(),
       copyrightText,
       updatesLog,
@@ -160,7 +211,6 @@ export default function Admin() {
 
       if (result.success) {
         setMessage({ type: 'success', text: 'تم حفظ جميع التعديلات بنجاح في كود المشروع!' });
-        // Optional refresh after a small delay
       } else {
         throw new Error(result.error || 'فشل الحفظ');
       }
@@ -222,7 +272,7 @@ export default function Admin() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <div>
             <h1 className="text-3xl font-extrabold text-gray-900">لوحة التحكم وتعديل التطبيق</h1>
-            <p className="text-sm text-gray-500 mt-1">قم بتعديل بيانات موقعك ورفع ملف الـ APK الخاص بك مباشرة</p>
+            <p className="text-sm text-gray-500 mt-1">قم بتعديل بيانات موقعك ورفع ملفات الأندرويد والكمبيوتر مباشرة</p>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -258,7 +308,7 @@ export default function Admin() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left Column: Config and APK upload */}
+          {/* Left Column: Config and Uploads */}
           <div className="lg:col-span-2 space-y-8">
             
             {/* App Settings Card */}
@@ -285,15 +335,24 @@ export default function Admin() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">الإصدار الحالي (Version)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">إصدار الأندرويد الحالي</label>
                   <input
                     type="text"
-                    value={version}
-                    onChange={(e) => setVersion(e.target.value)}
+                    value={androidVersion}
+                    onChange={(e) => setAndroidVersion(e.target.value)}
                     className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-right"
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">إصدار الكمبيوتر الحالي</label>
+                  <input
+                    type="text"
+                    value={desktopVersion}
+                    onChange={(e) => setDesktopVersion(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-right"
+                  />
+                </div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">تاريخ آخر تحديث</label>
                   <input
                     type="date"
@@ -314,21 +373,36 @@ export default function Admin() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">رابط تحميل التطبيق الحالي</label>
-                <input
-                  type="text"
-                  value={downloadLink}
-                  onChange={(e) => setDownloadLink(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg border-gray-300 bg-gray-50 text-gray-600 outline-none text-left"
-                  dir="ltr"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">رابط تحميل تطبيق الأندرويد</label>
+                  <input
+                    type="text"
+                    value={androidDownloadLink}
+                    onChange={(e) => setAndroidDownloadLink(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg border-gray-300 bg-gray-50 text-gray-600 outline-none text-left"
+                    dir="ltr"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">رابط تحميل نسخة الكمبيوتر</label>
+                  <input
+                    type="text"
+                    value={desktopDownloadLink}
+                    onChange={(e) => setDesktopDownloadLink(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg border-gray-300 bg-gray-50 text-gray-600 outline-none text-left"
+                    dir="ltr"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* APK Upload Card */}
+            {/* Android APK Upload Card */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-5">
-              <h2 className="text-xl font-bold text-gray-900 border-b pb-3 border-gray-100">رفع ملف APK جديد</h2>
+              <div className="flex items-center gap-2 border-b pb-3 border-gray-100">
+                <Smartphone size={20} className="text-blue-600" />
+                <h2 className="text-xl font-bold text-gray-900">رفع ملف الأندرويد (APK) جديد</h2>
+              </div>
               
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center space-y-4 bg-gray-50">
                 <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
@@ -349,7 +423,7 @@ export default function Admin() {
                   htmlFor="apk-upload-input"
                   className="inline-flex px-4 py-2 bg-white hover:bg-gray-100 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 shadow-sm cursor-pointer transition"
                 >
-                  اختر ملف التطبيق
+                  اختر ملف APK
                 </label>
 
                 {apkFile && (
@@ -359,25 +433,83 @@ export default function Admin() {
                 )}
               </div>
 
-              {isUploading && (
+              {isUploadingApk && (
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs text-gray-500">
                     <span>جاري رفع الملف...</span>
-                    <span>{uploadProgress}%</span>
+                    <span>{uploadProgressApk}%</span>
                   </div>
                   <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                    <div className="bg-blue-600 h-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
+                    <div className="bg-blue-600 h-full transition-all duration-300" style={{ width: `${uploadProgressApk}%` }}></div>
                   </div>
                 </div>
               )}
 
               <button
                 onClick={handleUploadApk}
-                disabled={!apkFile || isUploading}
-                className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed text-white rounded-lg font-bold shadow-sm transition flex items-center justify-center gap-2"
+                disabled={!apkFile || isUploadingApk}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed text-white rounded-lg font-bold shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Upload size={18} />
-                <span>ابدأ رفع ملف APK المختار</span>
+                <span>ابدأ رفع ملف APK للأندرويد</span>
+              </button>
+            </div>
+
+            {/* Desktop File Upload Card */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-5">
+              <div className="flex items-center gap-2 border-b pb-3 border-gray-100">
+                <Monitor size={20} className="text-yellow-600" />
+                <h2 className="text-xl font-bold text-gray-900">رفع ملف نسخة الكمبيوتر (Windows) جديد</h2>
+              </div>
+              
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center space-y-4 bg-gray-50">
+                <div className="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center mx-auto">
+                  <Upload size={24} />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-700">اضغط لتحديد الملف أو اسحبه هنا</p>
+                  <p className="text-xs text-gray-500">ملفات EXE أو ZIP للكمبيوتر</p>
+                </div>
+                <input
+                  type="file"
+                  accept=".exe,.zip"
+                  onChange={(e) => setDesktopFile(e.target.files?.[0] || null)}
+                  className="hidden"
+                  id="desktop-upload-input"
+                />
+                <label
+                  htmlFor="desktop-upload-input"
+                  className="inline-flex px-4 py-2 bg-white hover:bg-gray-100 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 shadow-sm cursor-pointer transition"
+                >
+                  اختر ملف الكمبيوتر
+                </label>
+
+                {desktopFile && (
+                  <div className="text-sm font-semibold text-yellow-700 bg-yellow-50 p-2.5 rounded-lg border border-yellow-200">
+                    ملف محدد: {desktopFile.name} ({(desktopFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </div>
+                )}
+              </div>
+
+              {isUploadingDesktop && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>جاري رفع الملف...</span>
+                    <span>{uploadProgressDesktop}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                    <div className="bg-yellow-600 h-full transition-all duration-300" style={{ width: `${uploadProgressDesktop}%` }}></div>
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={handleUploadDesktop}
+                disabled={!desktopFile || isUploadingDesktop}
+                className="w-full py-3 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed text-white rounded-lg font-bold shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Upload size={18} />
+                <span>ابدأ رفع ملف نسخة الكمبيوتر</span>
               </button>
             </div>
 

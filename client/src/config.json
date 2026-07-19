@@ -1,9 +1,11 @@
 {
   "projectName": "محطة طوفان الأقصى للكهرباء",
   "projectDescription": "نظام إدارة محطة الكهرباء",
-  "version": "1.0.0",
-  "lastUpdateDate": "2026-07-08",
-  "downloadLink": "/powerflow-release.apk",
+  "androidVersion": "1.0.0",
+  "desktopVersion": "1.0.0",
+  "lastUpdateDate": "2026-07-19",
+  "androidDownloadLink": "/powerflow-release.apk",
+  "desktopDownloadLink": "https://drive.google.com/uc?export=download&id=1IFA_6TNo2MdUTtVelzneQzQtHPS8tELj",
   "copyrightYear": 2026,
   "copyrightText": "جميع الحقوق محفوظة © محطة طوفان الأقصى للكهرباء",
   "updatesLog": [

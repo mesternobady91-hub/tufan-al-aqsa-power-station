@@ -3,7 +3,7 @@
 // التصميم: بطاقة مرتفعة مع ظل ناعم
 
 import { APP_CONFIG, BRAND_COLORS } from '@/config';
-import { Package, Calendar } from 'lucide-react';
+import { Calendar, Monitor, Smartphone } from 'lucide-react';
 
 export default function VersionInfo() {
   const lastUpdate = new Date(APP_CONFIG.lastUpdateDate);
@@ -17,23 +17,39 @@ export default function VersionInfo() {
     <section className="w-full py-12 md:py-16 px-4">
       <div className="container mx-auto max-w-4xl">
         <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 md:p-8 rounded-lg bg-white border border-gray-200"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 md:p-8 rounded-lg bg-white border border-gray-200"
           style={{
             boxShadow: '0 4px 12px rgba(15, 58, 125, 0.08)',
           }}
         >
-          {/* بطاقة رقم الإصدار */}
+          {/* بطاقة رقم إصدار الأندرويد */}
+          <div className="flex items-center gap-4">
+            <div
+              className="w-12 h-12 rounded-lg flex items-center justify-center text-white"
+              style={{ backgroundColor: BRAND_COLORS.primary }}
+            >
+              <Smartphone size={24} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 mb-1">إصدار الأندرويد</p>
+              <p className="text-2xl font-bold" style={{ color: BRAND_COLORS.primary }}>
+                {APP_CONFIG.androidVersion}
+              </p>
+            </div>
+          </div>
+
+          {/* بطاقة رقم إصدار الكمبيوتر */}
           <div className="flex items-center gap-4">
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center text-white"
               style={{ backgroundColor: BRAND_COLORS.secondary }}
             >
-              <Package size={24} />
+              <Monitor size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-600 mb-1">رقم الإصدار</p>
-              <p className="text-2xl font-bold" style={{ color: BRAND_COLORS.primary }}>
-                {APP_CONFIG.version}
+              <p className="text-sm text-gray-600 mb-1">إصدار الكمبيوتر</p>
+              <p className="text-2xl font-bold" style={{ color: BRAND_COLORS.secondary }}>
+                {APP_CONFIG.desktopVersion}
               </p>
             </div>
           </div>
