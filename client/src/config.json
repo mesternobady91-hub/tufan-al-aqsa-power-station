@@ -1,14 +1,26 @@
 {
   "projectName": "محطة طوفان الأقصى للكهرباء",
   "projectDescription": "نظام إدارة محطة الكهرباء",
-  "androidVersion": "1.0.3",
-  "desktopVersion": "1.0.0",
+  "androidVersion": "1.0.4",
+  "desktopVersion": "1.0.1",
   "lastUpdateDate": "2026-07-23",
   "androidDownloadLink": "/powerflow-release.apk",
-  "desktopDownloadLink": "https://drive.google.com/uc?export=download&id=1Biq3EXkjrxR1OKW3V7BYkPlE0yvGisue",
+  "desktopDownloadLink": "https://drive.google.com/uc?export=download&id=1eHjocBiekE5r2Bg9V08V3DfmolME9PMj",
   "copyrightYear": 2026,
   "copyrightText": "جميع الحقوق محفوظة © محطة طوفان الأقصى للكهرباء",
   "updatesLog": [
+    {
+      "id": 6,
+      "version": "1.0.4",
+      "date": "2026-07-23",
+      "title": "تحديث جديد للأندرويد والديسكتوب",
+      "description": "حل مشكلة استهلاك القراءة المرتفع في Firebase وتحسينات على أداء النظامين",
+      "features": [
+        "حل مشكلة استهلاك القراءة في قاعدة بيانات الفايربيس (Firebase Reading Optimization)",
+        "تحسين سرعة الاستجابة واستقرار النظامين",
+        "تحديث الملفات التنفيذية للأندرويد والديسكتوب"
+      ]
+    },
     {
       "id": 5,
       "version": "1.0.3",
