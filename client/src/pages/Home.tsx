@@ -1,32 +1,52 @@
-// صفحة الرئيسية
-// تجميع جميع مكونات الصفحة الرئيسية
-
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
+import FeatureShowcase from '@/components/FeatureShowcase';
+import InteractiveSimulator from '@/components/InteractiveSimulator';
 import VersionInfo from '@/components/VersionInfo';
 import UpdatesSection from '@/components/UpdatesSection';
+import DownloadCtaBanner from '@/components/DownloadCtaBanner';
+import ContactDeveloperSection from '@/components/ContactDeveloperSection';
 import Footer from '@/components/Footer';
+import ElectricBackground from '@/components/ElectricBackground';
+import ScrollMotionEngine from '@/components/ScrollMotionEngine';
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* Header */}
-      <Header />
+    <ScrollMotionEngine>
+      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 relative overflow-hidden font-sans">
+        {/* خلفية الطاقة الكهربائية التفاعلية */}
+        <ElectricBackground />
 
-      {/* المحتوى الرئيسي */}
-      <main className="flex-1">
-        {/* Hero Section */}
-        <HeroSection />
+        {/* Header */}
+        <Header />
 
-        {/* Version Info */}
-        <VersionInfo />
+        {/* المحتوى الرئيسي */}
+        <main className="flex-1 relative z-10">
+          {/* Hero Section */}
+          <HeroSection />
 
-        {/* Updates Section */}
-        <UpdatesSection />
-      </main>
+          {/* Interactive Live Simulator */}
+          <InteractiveSimulator />
 
-      {/* Footer */}
-      <Footer />
-    </div>
+          {/* Feature Showcase */}
+          <FeatureShowcase />
+
+          {/* Version Info */}
+          <VersionInfo />
+
+          {/* Updates Section */}
+          <UpdatesSection />
+
+          {/* Bottom Download CTA Banner */}
+          <DownloadCtaBanner />
+
+          {/* Contact Developer Section */}
+          <ContactDeveloperSection />
+        </main>
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    </ScrollMotionEngine>
   );
 }
