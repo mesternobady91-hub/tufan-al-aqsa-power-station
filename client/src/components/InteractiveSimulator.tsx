@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, Zap, Printer, RefreshCw, CheckCircle2, DollarSign, Calendar, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Calculator, Zap, Printer, RefreshCw, Calendar, Sparkles, Archive } from 'lucide-react';
 import TiltCard from './TiltCard';
 
 export default function InteractiveSimulator() {
   const [prevReading, setPrevReading] = useState<number>(1250);
   const [currReading, setCurrReading] = useState<number>(1480);
-  const [cycle, setCycle] = useState<'first' | 'second'>('first');
+  const [cycle, setCycle] = useState<'monthly' | 'semi_first' | 'semi_second'>('semi_first');
   const [tariff, setTariff] = useState<'residential' | 'commercial'>('residential');
   const [subscriberName, setSubscriberName] = useState('أحمد محمد العلي');
   const [meterNumber, setMeterNumber] = useState('TF-88421');
-  const [isCalculated, setIsCalculated] = useState(true);
+  const [isArchived, setIsArchived] = useState<boolean>(true);
 
   // معادلات احتساب التعرفة الكهربائية المحاكية
   const consumption = Math.max(0, currReading - prevReading);
@@ -25,6 +25,17 @@ export default function InteractiveSimulator() {
     setSubscriberName('مشترك تجريبي');
   };
 
+  const getCycleLabel = () => {
+    switch (cycle) {
+      case 'monthly':
+        return 'دورة شهرية كاملة (1 - 30)';
+      case 'semi_first':
+        return 'دورة نصف شهرية (1 - 15)';
+      case 'semi_second':
+        return 'دورة نصف شهرية (16 - 30)';
+    }
+  };
+
   return (
     <section className="w-full py-16 md:py-24 px-4 relative z-10">
       <div className="container mx-auto max-w-6xl">
@@ -33,13 +44,13 @@ export default function InteractiveSimulator() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-semibold mb-3 shadow-lg shadow-cyan-950/50">
             <Sparkles size={16} className="text-amber-400 animate-spin-slow" />
-            <span>محاكي النظام المباشر</span>
+            <span>محاكي النظام المباشر (إصدار v1.1.0)</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
-            جرب احتساب الفاتورة <span className="text-gradient-electric">تفاعلياً الآن</span>
+            جرب احتساب الفاتورة والأرشفة <span className="text-gradient-electric">تفاعلياً الآن</span>
           </h2>
           <p className="text-slate-300 text-sm md:text-base mt-3 max-w-xl mx-auto">
-            قم بإدخال القراءات التجريبية أدناه لترى كيف يقوم نظام محطة طوفان الأقصى بإحساب الاستهلاك والدورة المالية فوراً ودون أي تأخير.
+            اختبار تفاعلي لحسابات الاستهلاك والدورات الشهرية والنصف شهرية ونظام الأرشفة المتقدم للإصدار الرسمى الجديد v1.1.0.
           </p>
         </div>
 
@@ -55,7 +66,7 @@ export default function InteractiveSimulator() {
                     <div className="p-2.5 rounded-xl bg-cyan-950 border border-cyan-500/30 text-cyan-400">
                       <Calculator size={22} />
                     </div>
-                    <span className="font-bold text-white text-base">مدخلات القراءة والاشتراك</span>
+                    <span className="font-bold text-white text-base">مدخلات القراءة والدورة السجلية</span>
                   </div>
 
                   <button
@@ -89,31 +100,42 @@ export default function InteractiveSimulator() {
                   </div>
                 </div>
 
-                {/* اختيار الدورة النصف شهرية */}
+                {/* اختيار نوع الدورة المالية (شهرية / نصف شهرية) */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-2">الدورة النصف شهرية (تحديث v1.0.1)</label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <label className="block text-xs font-semibold text-slate-300 mb-2">نوع الدورة المحاسبية (جديد v1.1.0)</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <button
-                      onClick={() => setCycle('first')}
-                      className={`p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                        cycle === 'first'
-                          ? 'bg-cyan-950/80 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-950/40'
+                      onClick={() => setCycle('monthly')}
+                      className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        cycle === 'monthly'
+                          ? 'bg-amber-950/80 border-amber-400 text-amber-300 shadow-md shadow-amber-950/40'
                           : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
                       <Calendar size={14} />
-                      <span>الدورة 1 (1 - 15 الشهر)</span>
+                      <span>دورة شهرية</span>
                     </button>
                     <button
-                      onClick={() => setCycle('second')}
-                      className={`p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                        cycle === 'second'
+                      onClick={() => setCycle('semi_first')}
+                      className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        cycle === 'semi_first'
                           ? 'bg-cyan-950/80 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-950/40'
                           : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
                       }`}
                     >
                       <Calendar size={14} />
-                      <span>الدورة 2 (16 - 30 الشهر)</span>
+                      <span>نصف شهرية (1 - 15)</span>
+                    </button>
+                    <button
+                      onClick={() => setCycle('semi_second')}
+                      className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        cycle === 'semi_second'
+                          ? 'bg-cyan-950/80 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-950/40'
+                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      <Calendar size={14} />
+                      <span>نصف شهرية (16 - 30)</span>
                     </button>
                   </div>
                 </div>
@@ -140,30 +162,48 @@ export default function InteractiveSimulator() {
                   </div>
                 </div>
 
-                {/* نوع الاشتراك */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-2">نوع التعرفة والتعامل</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => setTariff('residential')}
-                      className={`p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                        tariff === 'residential'
-                          ? 'bg-blue-950/80 border-blue-400 text-blue-300'
-                          : 'bg-slate-900 border-slate-800 text-slate-400'
-                      }`}
+                {/* نوع الاشتراك والأرشفة */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-2">نوع التعرفة</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setTariff('residential')}
+                        className={`p-2.5 rounded-xl border text-[11px] font-bold transition-all cursor-pointer ${
+                          tariff === 'residential'
+                            ? 'bg-blue-950/80 border-blue-400 text-blue-300'
+                            : 'bg-slate-900 border-slate-800 text-slate-400'
+                        }`}
+                      >
+                        سكني (1.20)
+                      </button>
+                      <button
+                        onClick={() => setTariff('commercial')}
+                        className={`p-2.5 rounded-xl border text-[11px] font-bold transition-all cursor-pointer ${
+                          tariff === 'commercial'
+                            ? 'bg-amber-950/80 border-amber-400 text-amber-300'
+                            : 'bg-slate-900 border-slate-800 text-slate-400'
+                        }`}
+                      >
+                        تجاري (1.50)
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-2">حالة الأرشفة الآلية (v1.1.0)</label>
+                    <div
+                      onClick={() => setIsArchived(!isArchived)}
+                      className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between cursor-pointer hover:border-cyan-500/40 transition"
                     >
-                      منزلي / سكني (1.20 ر.س / KWh)
-                    </button>
-                    <button
-                      onClick={() => setTariff('commercial')}
-                      className={`p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                        tariff === 'commercial'
-                          ? 'bg-amber-950/80 border-amber-400 text-amber-300'
-                          : 'bg-slate-900 border-slate-800 text-slate-400'
-                      }`}
-                    >
-                      تجاري / صناعي (1.50 ر.س / KWh)
-                    </button>
+                      <div className="flex items-center gap-2 text-xs font-bold text-cyan-300">
+                        <Archive size={16} />
+                        <span>أرشفة فورية للسجلات</span>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isArchived ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/40' : 'bg-slate-800 text-slate-400'}`}>
+                        {isArchived ? 'مفعّل ✓' : 'معطل'}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -184,12 +224,12 @@ export default function InteractiveSimulator() {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-white">فاتورة محطة طوفان الأقصى</div>
-                      <div className="text-[10px] text-cyan-300">معاينة النظام المحاكي المباشر</div>
+                      <div className="text-[10px] text-cyan-300">إصدار التحديث v1.1.0</div>
                     </div>
                   </div>
 
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/40">
-                    مكتملة الحساب
+                    مكتمل ومؤرشف
                   </span>
                 </div>
 
@@ -204,10 +244,12 @@ export default function InteractiveSimulator() {
                     <span className="font-mono text-cyan-300">{meterNumber}</span>
                   </div>
                   <div className="flex justify-between py-1 border-b border-slate-900">
-                    <span className="text-slate-400">الدورة النصف شهرية:</span>
-                    <span className="font-bold text-amber-400">
-                      {cycle === 'first' ? 'الدورة الأولى (1 - 15)' : 'الدورة الثانية (16 - 30)'}
-                    </span>
+                    <span className="text-slate-400">نوع الدورة المحاسبية:</span>
+                    <span className="font-bold text-amber-400">{getCycleLabel()}</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-900">
+                    <span className="text-slate-400">حالة الأرشفة السجلية:</span>
+                    <span className="font-bold text-emerald-400">تم حفظ الأرشيف بنجاح ✓</span>
                   </div>
                   <div className="flex justify-between py-1 border-b border-slate-900">
                     <span className="text-slate-400">كمية الاستهلاك (KWh):</span>
@@ -226,11 +268,11 @@ export default function InteractiveSimulator() {
 
                 {/* زر طباعة وهمي */}
                 <button
-                  onClick={() => alert('هذه محاكاة تفاعلية لاختبار سرعة ودقة النظام!')}
+                  onClick={() => alert('محاكاة طباعة الفاتورة والأرشفة بنجاح ضمن الإصدار v1.1.0!')}
                   className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-cyan-300 hover:text-white rounded-xl font-bold text-xs border border-cyan-500/30 transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
                 >
                   <Printer size={16} />
-                  <span>محاكاة طباعة الفاتورة الفورية</span>
+                  <span>طباعة وأرشفة الفاتورة فورياً</span>
                 </button>
 
               </div>
