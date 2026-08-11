@@ -1,14 +1,28 @@
 {
   "projectName": "محطة طوفان الأقصى للكهرباء",
   "projectDescription": "نظام إدارة محطة الكهرباء",
-  "androidVersion": "1.1.0",
-  "desktopVersion": "1.1.0",
-  "lastUpdateDate": "2026-08-10",
+  "androidVersion": "1.1.2",
+  "desktopVersion": "1.1.2",
+  "lastUpdateDate": "2026-08-11",
   "androidDownloadLink": "/powerflow-release.apk",
-  "desktopDownloadLink": "https://drive.google.com/uc?export=download&id=12nuLESALe5lCw4Bxt9ecdMLbSuX1BlkM",
+  "desktopDownloadLink": "https://drive.google.com/uc?export=download&id=1UILRtatwiVDUcR5nhBZTMIxE8r237T8c",
   "copyrightYear": 2026,
   "copyrightText": "جميع الحقوق محفوظة © محطة طوفان الأقصى للكهرباء",
   "updatesLog": [
+    {
+      "id": 3,
+      "version": "1.1.2",
+      "date": "2026-08-11",
+      "title": "تحديث الإصلاحات والدقة v1.1.2 (فلترة الدورات والتسلسلات الزمنية)",
+      "description": "تحديث جديد يشتمل على تصحيحات شاملة لدقة عرض البيانات في فلتر الدورات وفلتر النطاق الزمني (من تاريخ إلى تاريخ) للأندرويد والديسكتوب.",
+      "features": [
+        "تصحيح وتطوير دقة عرض البيانات في فلتر الدورات المحاسبية الشهرية والنصف شهرية",
+        "تحسين وتصحيح فلترة النطاق الزمني وسجلات الاستهلاك (من تاريخ إلى تاريخ)",
+        "تحديث الملف التنفيذي المعتمد لنسخة الكمبيوتر (Desktop Windows v1.1.2)",
+        "تحديث الملف التنفيذي المعتمد لنسخة الأندرويد (Android APK v1.1.2)",
+        "تحسين سرعة الاستعلام واستقرار التقارير المحاسبية"
+      ]
+    },
     {
       "id": 2,
       "version": "1.1.0",
