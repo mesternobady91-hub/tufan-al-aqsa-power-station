@@ -1,14 +1,28 @@
 {
   "projectName": "محطة طوفان الأقصى للكهرباء",
   "projectDescription": "نظام إدارة محطة الكهرباء",
-  "androidVersion": "1.2.2",
-  "desktopVersion": "1.2.0",
-  "lastUpdateDate": "2026-09-10",
+  "androidVersion": "2.0.0",
+  "desktopVersion": "2.0.0",
+  "lastUpdateDate": "2026-09-20",
   "androidDownloadLink": "/powerflow-release.apk",
-  "desktopDownloadLink": "https://drive.google.com/uc?export=download&id=1DiE5X_vUfBvCcwQQD_BrkAF8fTybDNts",
+  "desktopDownloadLink": "https://drive.google.com/uc?export=download&id=1K7x-7wa4CIqnHnTYU3OtPdr4PqKPl7vp",
   "copyrightYear": 2026,
   "copyrightText": "جميع الحقوق محفوظة © محطة طوفان الأقصى للكهرباء",
   "updatesLog": [
+    {
+      "id": 14,
+      "version": "2.0.0",
+      "date": "2026-09-20",
+      "title": "إصدار رئيسي جديد v2.0.0 (الانتقال لقواعد بيانات Supabase & PostgreSQL)",
+      "description": "إصدار وتجهيز تحديث جديد واسع يمثل النقلة النوعية الشاملة في بنية قواعد البيانات بالانتقال من Firebase إلى Supabase & PostgreSQL وتحديث النسخ التنفيذية للأنظمة.",
+      "features": [
+        "الانتقال الشامل والكامل في بنية النظام من قواعد بيانات Firebase إلى Supabase & PostgreSQL",
+        "تحديث وتطوير الملف التنفيذي المعتمد لنسخة الكمبيوتر (Desktop Windows v2.0.0)",
+        "تحديث وتطوير الملف التنفيذي المعتمد لنسخة الأندرويد (Android APK v2.0.0)",
+        "رفع كفاءة وسرعة واستقرار الاستعلامات والمزامنة والحسابات المحاسبية",
+        "تحديث وتعميم شارات ورقم الاصدار المعتمد v2.0.0 على جميع صفحات النظام"
+      ]
+    },
     {
       "id": 13,
       "version": "1.2.2",
