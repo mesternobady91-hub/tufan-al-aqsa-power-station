@@ -1,14 +1,27 @@
 {
   "projectName": "محطة طوفان الأقصى للكهرباء",
   "projectDescription": "نظام إدارة محطة الكهرباء",
-  "androidVersion": "2.0.3",
-  "desktopVersion": "2.0.0",
-  "lastUpdateDate": "2026-09-28",
+  "androidVersion": "2.1.0",
+  "desktopVersion": "2.1.0",
+  "lastUpdateDate": "2026-10-23",
   "androidDownloadLink": "/powerflow-release.apk",
-  "desktopDownloadLink": "https://drive.google.com/uc?export=download&id=1K7x-7wa4CIqnHnTYU3OtPdr4PqKPl7vp",
+  "desktopDownloadLink": "https://github.com/mesternobady91-hub/tufan-al-aqsa-power-station/releases/download/v2.1.0/PowerFlow-Setup-1.4.0.exe",
   "copyrightYear": 2026,
   "copyrightText": "جميع الحقوق محفوظة © محطة طوفان الأقصى للكهرباء",
   "updatesLog": [
+    {
+      "id": 18,
+      "version": "2.1.0",
+      "date": "2026-10-23",
+      "title": "إصدار رئيسي موحد v2.1.0 (الكمبيوتر والأندرويد)",
+      "description": "إصدار وتجهيز تحديث رئيسي شامل لنظامي الكمبيوتر (Windows) والأندرويد يشتمل على تحسينات أداء واسعة وتحديث الملفات التنفيذية المعتمدة لكلا النظامين.",
+      "features": [
+        "تحديث وتطوير الملف التنفيذي المعتمد لنسخة الكمبيوتر (Desktop Windows EXE v2.1.0)",
+        "تحديث وتطوير الملف التنفيذي المعتمد لنسخة الأندرويد (Android APK v2.1.0)",
+        "تحسينات شاملة على استقرار النظام والتقارير والمزامنة الفورية",
+        "تحديث وتعميم شارات ورقم الإصدار المعتمد v2.1.0 على جميع صفحات وواجهات النظام"
+      ]
+    },
     {
       "id": 17,
       "version": "2.0.3",
